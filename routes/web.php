@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () { 
-    return view('pages.index');
-});
+Route::get('/',function(){return view('pages.index');});
 
 Route::resource('/message','MessageController');
 Route::resource('/user','UserController');

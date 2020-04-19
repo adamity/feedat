@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Message;
+use Auth;
 
 class MessageController extends Controller
 {
@@ -14,8 +15,16 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $messages = Message::all();
-        return view('messages.index')->with('messages', $messages);
+        if(Auth::check())
+        {
+            $user = Auth::user()->user_id;
+            $messages = Message::all()->where('user_id',$user);
+            return view('messages.index')->with('messages', $messages);
+        }
+        else
+        {
+            return view('pages.index');
+        }
     }
 
     /**
@@ -25,7 +34,7 @@ class MessageController extends Controller
      */
     public function create($id)
     {
-        return view('messages.create')->with('username',$id);
+        return view('messages.create')->with('user_id',$id);
     }
 
     /**
@@ -36,11 +45,11 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, ['username' => 'required','message' => 'required']);
+        $this->validate($request, ['user_id' => 'required','message' => 'required']);
 
         // Create Message
         $message = new Message;
-        $message->username = $request->input('username');
+        $message->user_id = $request->input('user_id');
         $message->message = $request->input('message');
         $message->save();
 
@@ -56,6 +65,7 @@ class MessageController extends Controller
     public function show($id)
     {
         $message = Message::find($id);
+        return $message;
     }
 
     /**
