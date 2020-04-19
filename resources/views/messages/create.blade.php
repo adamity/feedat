@@ -6,8 +6,8 @@
     <h1>Create Message</h1>
     {!! Form::open(['action' => 'MessageController@store', 'method' => 'POST']) !!}
         <div class="form form-group">
-            {{Form::label('username','Username')}}
-            {{Form::text('username',$username,['class' => 'form-control', 'placeholder' => 'Username'])}}
+            {{Form::label('user_id','Username')}}
+            {{Form::text('user_id',$user_id,['class' => 'form-control', 'placeholder' => 'Username'])}}
         </div>
         <div class="form form-group">
             {{Form::label('message','Message')}}
