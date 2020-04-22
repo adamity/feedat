@@ -12,7 +12,9 @@
 */
 
 Route::get('/',function(){return view('pages.index');});
+Route::get('/setting',function(){return view('pages.setting');});
 
+Route::get('/message/archived','MessageController@archived');
 Route::resource('/message','MessageController');
 Route::resource('/user','UserController');
 Auth::routes();

@@ -18,7 +18,9 @@ class MessageController extends Controller
         if(Auth::check())
         {
             $user = Auth::user()->user_id;
-            $messages = Message::all()->where('user_id',$user);
+            //$messages = Message::all()->where('user_id',$user);
+            $query = ['user_id' => $user,'archive' => false];
+            $messages = Message::where($query)->get();
             return view('messages.index')->with('messages', $messages);
         }
         else
@@ -53,7 +55,14 @@ class MessageController extends Controller
         $message->message = $request->input('message');
         $message->save();
 
-        return redirect('/home')->with('success','Message Sent!');
+        if(Auth::check())
+        {
+            return redirect('/home')->with('success','Message Sent!');
+        }
+        else
+        {
+            return redirect('/register')->with('success','Message Sent! Now, It Is Your Turn. Register Now!');
+        }
     }
 
     /**
@@ -76,7 +85,10 @@ class MessageController extends Controller
      */
     public function edit($id)
     {
-        //
+        $message = Message::find($id);
+        $message->archive = true;
+        $message->save();
+        return redirect('/message')->with('success','Message Archived!');
     }
 
     /**
@@ -88,7 +100,9 @@ class MessageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //Message::where('archive',$id)->update($request->all());
+        //return redirect('/messages');
+        //return view("Update");
     }
 
     /**
@@ -99,6 +113,24 @@ class MessageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $message = Message::find($id);
+        $message->delete();
+        return redirect()->back()->with('success','Message Removed!');
+    }
+
+    public function archived()
+    {
+        if(Auth::check())
+        {
+            $user = Auth::user()->user_id;
+            //$messages = Message::all()->where('user_id',$user);
+            $query = ['user_id' => $user,'archive' => true];
+            $messages = Message::where($query)->get();
+            return view('messages.archived')->with('messages', $messages);
+        }
+        else
+        {
+            return view('pages.index');
+        }
     }
 }
