@@ -22,10 +22,11 @@
                                 </sub>
                             </div>
                         @endforeach
+                        <div class="text text-center">{{$messages->links()}}</div>
                     @else
                         <p>No Messages Found</p>
                     @endif
-                    <a href="/message" class="btn btn-default">Messages</a>
+                    <a href="/message" class="btn btn-default pull pull-right">Messages</a>
                 </div>
             </div>
         </div>

@@ -20,7 +20,7 @@ class MessageController extends Controller
             $user = Auth::user()->user_id;
             //$messages = Message::all()->where('user_id',$user);
             $query = ['user_id' => $user,'archive' => false];
-            $messages = Message::where($query)->get();
+            $messages = Message::where($query)->orderBy('id','desc')->paginate(10);
             return view('messages.index')->with('messages', $messages);
         }
         else
@@ -125,7 +125,7 @@ class MessageController extends Controller
             $user = Auth::user()->user_id;
             //$messages = Message::all()->where('user_id',$user);
             $query = ['user_id' => $user,'archive' => true];
-            $messages = Message::where($query)->get();
+            $messages = Message::where($query)->orderBy('id','desc')->paginate(10);
             return view('messages.archived')->with('messages', $messages);
         }
         else
