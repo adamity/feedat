@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Message;
+use App\User;
+use Auth;
 
 class UserController extends Controller
 {
@@ -79,6 +82,23 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        if(Auth::check())
+        {
+            $user = User::where('user_id',$id);
+            $user->delete();
+            $messages = Message::all()->where('user_id',$id);
+            if(count($messages)>0)
+            {
+                foreach($messages as $message)
+                {
+                    $message->delete();
+                }
+            }
+            return view('auth.register');
+        }
+        else
+        {
+            return view('pages.index');
+        }
     }
 }

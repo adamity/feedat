@@ -12,7 +12,8 @@
 */
 
 Route::get('/',function(){return view('pages.index');});
-Route::get('/setting',function(){return view('pages.setting');});
+Route::get('/setting',function(){return view('users.index');});
+Route::get('/delete-account',function(){return view('users.delete');});
 
 Route::get('/message/archived','MessageController@archived');
 Route::resource('/message','MessageController');
