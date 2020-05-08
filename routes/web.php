@@ -14,6 +14,8 @@
 Route::get('/',function(){return view('pages.index');});
 Route::get('/setting',function(){return view('users.index');});
 Route::get('/delete-account',function(){return view('users.delete');});
+Route::get('/change-password','UserController@editPassword');
+Route::post('/change-password','UserController@updatePassword')->name('changepassword');
 
 Route::get('/message/archived','MessageController@archived');
 Route::resource('/message','MessageController');

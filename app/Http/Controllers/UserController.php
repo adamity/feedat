@@ -6,9 +6,14 @@ use Illuminate\Http\Request;
 use App\Message;
 use App\User;
 use Auth;
+use Hash;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +21,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+        return view('users.index')->with('user',$user);
     }
 
     /**
@@ -59,7 +65,13 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
+        //$user_id = $id;
+        //echo $user_id;
+        //return $id;
+        //$user_id = $id->user;
+        $user = User::where('user_id',$id)->first();
+        //echo $user->id;
+        return view('users.edit')->with('user',$user);
     }
 
     /**
@@ -71,7 +83,16 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //return "Hello World";
+        $this->validate($request, ['user_id' => 'required','email' => 'required']);
+
+        // Update user
+        $user = User::where('user_id',$id)->first();
+        $user->user_id = $request->input('user_id');
+        $user->email = $request->input('email');
+        $user->save();
+
+        return redirect('/user')->with('success','User Information Updated');
     }
 
     /**
@@ -95,6 +116,47 @@ class UserController extends Controller
                 }
             }
             return view('auth.register');
+        }
+        else
+        {
+            return view('pages.index');
+        }
+    }
+
+    public function editPassword()
+    {
+        return view('users.changePassword');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $this->validate($request, [
+            'current_password' => ['required','min:6'], 
+            'new_password' => ['required','min:6'],
+            'confirm_new_password' => ['required','min:6']
+            ]);
+
+        if(!Hash::check($request->get('current_password'), Auth::user()->password))
+        {
+            return back()->with('error', 'Current Password Mismatch');
+        }
+        else if($request->get('current_password') === $request->get('new_password'))
+        {
+            return back()->with('error', 'New Password Must Be Different From Current Password');
+        }
+        else if(!($request->get('new_password') === $request->get('confirm_new_password')))
+        {
+            return back()->with('error', 'New Password And Confirm New Password Must Be The Same');
+        }
+        else if(Hash::check($request->get('current_password'), Auth::user()->password))
+        {
+            $user = Auth::user();
+            $user->password = bcrypt($request->input('new_password'));
+            $user->save();
+
+            return redirect('/user')->with('success','Password Change Successfully');
+
+            // Last Here, Password Not Save
         }
         else
         {
