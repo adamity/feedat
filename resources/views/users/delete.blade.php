@@ -9,7 +9,7 @@
                 <div class="panel-heading">Delete Account</div>
                 <div class="panel-body">
                     <p>You are about to delete your feedat account, are you sure to proceed?</p>
-                    <a href="/user" class="btn btn-default">Cancel</a>
+                    <a href="/home" class="btn btn-default">Cancel</a>
                     {!!Form::open(['action' => ['UserController@destroy', $user=Auth::user()->user_id], 'method' => 'POST', 'class' => 'pull-right'])!!}
                                         {{Form::hidden('_method','DELETE')}}
                                         {{Form::submit('Yes, Delete Now!',['class' => 'btn btn-danger'])}}
