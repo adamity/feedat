@@ -4,52 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Message;
+use App\User;
 use Auth;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         if(Auth::check())
         {
             $user = Auth::user()->user_id;
-            //$messages = Message::all()->where('user_id',$user);
             $query = ['user_id' => $user,'archive' => false];
             $messages = Message::where($query)->orderBy('id','desc')->paginate(10);
             return view('messages.index')->with('messages', $messages);
         }
         else
         {
-            return view('pages.index');
+            return redirect('/login');
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create($id)
     {
-        return view('messages.create')->with('user_id',$id);
+        $user = User::where('user_id', '=', $id)->first();
+
+        if($user != null)
+        {
+            if(Auth::check())
+            {
+                $currentUser = Auth::user()->user_id;
+                $targetUser = $user->user_id;
+                if($targetUser === $currentUser)
+                {
+                    return redirect('/home');
+                }
+                else
+                {
+                    return view('messages.create')->with('user_id',$id);
+                }
+            }
+            else
+            {
+                return view('messages.create')->with('user_id',$id);
+            }
+        }
+        else
+        {
+            $errorMessage = "There is no one with the username $id";
+            return redirect('/register')->with('error',$errorMessage);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $this->validate($request, ['user_id' => 'required','message' => 'required']);
 
-        // Create Message
         $message = new Message;
         $message->user_id = $request->input('user_id');
         $message->message = $request->input('message');
@@ -65,57 +74,19 @@ class MessageController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $message = Message::find($id);
-        return $message;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        $message = Message::find($id);
-        $message->archive = true;
-        $message->save();
-        return redirect('/message')->with('success','Message Archived!');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //Message::where('archive',$id)->update($request->all());
-        //return redirect('/messages');
-        //return view("Update");
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $message = Message::find($id);
-        $message->delete();
-        return redirect()->back()->with('success','Message Removed!');
+        if(Auth::check())
+        {
+            $message = Message::find($id);
+            $message->archive = true;
+            $message->save();
+            return redirect('/message')->with('success','Message Archived!');
+        }
+        else
+        {
+            return redirect('/login');
+        }
     }
 
     public function archived()
@@ -123,14 +94,27 @@ class MessageController extends Controller
         if(Auth::check())
         {
             $user = Auth::user()->user_id;
-            //$messages = Message::all()->where('user_id',$user);
             $query = ['user_id' => $user,'archive' => true];
             $messages = Message::where($query)->orderBy('id','desc')->paginate(10);
             return view('messages.archived')->with('messages', $messages);
         }
         else
         {
-            return view('pages.index');
+            return redirect('/login');
+        }
+    }
+
+    public function destroy($id)
+    {
+        if(Auth::check())
+        {
+            $message = Message::find($id);
+            $message->delete();
+            return redirect()->back()->with('success','Message Removed!');
+        }
+        else
+        {
+            return redirect('/login');
         }
     }
 }

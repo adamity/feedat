@@ -1,26 +1,22 @@
 <?php
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
+Auth::routes();
 Route::get('/',function(){return view('pages.index');});
-Route::get('/setting',function(){return view('users.index');});
-Route::get('/delete-account',function(){return view('users.delete');});
+
+Route::get('/home','HomeController@home');
+Route::get('/setting','HomeController@setting');
+Route::get('/delete-account','HomeController@deleteAccount');
+
+Route::get('/user','UserController@show');
+Route::get('/edit-info','UserController@editInfo');
+Route::post('/edit-info','UserController@updateInfo')->name('updateinfo');
 Route::get('/change-password','UserController@editPassword');
 Route::post('/change-password','UserController@updatePassword')->name('changepassword');
+Route::delete('/delete-account','UserController@destroy')->name('destroy');
 
-Route::get('/message/archived','MessageController@archived');
-Route::resource('/message','MessageController');
-Route::resource('/user','UserController');
-Auth::routes();
-
-Route::get('/home','HomeController@index');
+Route::get('/message','MessageController@index');
 Route::get('/{user}','MessageController@create');
+Route::post('/send-message','MessageController@store')->name('sendmessage');
+Route::get('/archive-message/{message}','MessageController@edit');
+Route::get('/message/archived','MessageController@archived');
+Route::delete('/delete-message/{message}','MessageController@destroy');

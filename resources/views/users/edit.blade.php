@@ -3,31 +3,23 @@
 @section('title')Settings - @endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="panel panel-default">
-                <div class="panel-heading">Settings</div>
-                <div class="panel-body">
-                    {!!Form::open(['action' => ['UserController@update', $user->user_id], 'method' => 'POST'])!!}
-                        <div class="form form-group">
-                            {{Form::label('user_id','Username')}}
-                            {{Form::text('user_id', $user->user_id, ['class' => 'form form-control', 'placeholder' => 'Enter Username'])}}
-                        </div>
-                        
-                        <div class="form form-group">
-                            {{Form::label('email','Email')}}
-                            {{Form::email('email', $user->email, ['class' => 'form form-control', 'placeholder' => 'Enter Email'])}}
-                        </div>
-
-                        {{Form::hidden('_method', 'PUT')}}
-                        {{Form::submit('Save Change', ['class' => 'btn btn-default'])}}
-                        
-                        <a href="/change-password" class="btn btn-default">Change Password</a>
-                        <a href="/user" class="btn btn-default">Cancel</a>
-                        <a href="/delete-account" class="btn btn-danger pull pull-right">Delete Account</a>
-                    {!!Form::close()!!}
-                </div>
-            </div>
-        </div>
+@section('subtitle')Settings @endsection
+<form action="{!! route('updateinfo') !!}" method="POST">
+    {!! csrf_field() !!}
+    <div class="form form-group">
+        <label for="user_id">Username</label>
+        <input class="form form-control" type="text" name="user_id" id="user_id" placeholder="Enter Username" value="{{$user->user_id}}">
     </div>
+
+    <div class="form form-group">
+        <label for="email">Email</label>
+        <input class="form form-control" type="email" name="email" id="email" placeholder="Enter Email" value="{{$user->email}}">
+    </div>
+
+    <input class="btn btn-default" type="submit" name="submit" id="submit" value="Save Change">
+
+    <a href="/change-password" class="btn btn-default">Change Password</a>
+    <a href="/user" class="btn btn-default">Cancel</a>
+    <a href="/delete-account" class="btn btn-danger pull pull-right">Delete Account</a>
+</form>
 @endsection
