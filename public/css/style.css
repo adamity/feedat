@@ -1,0 +1,47 @@
+.rounded-0 {
+    border-radius: 0 !important;
+}
+
+.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+.mb-6 {
+    margin-bottom: 4rem !important;
+}
+
+.d-flex {
+	display: flex !important;
+}
+
+.justify-content-center {
+	justify-content: center !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.vh-100 {
+    height: 100vh !important;
+}
+
+.flex-column {
+	flex-direction: column !important;
+}
+
+.min-w-300px {
+    min-width: 300px !important;
+}
+
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+.text-dark {
+    color: #212529 !important;
+}
+
+.font-weight-bold {
+    font-weight: 700 !important;
+}

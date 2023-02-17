@@ -1,4 +1,4 @@
-<nav class="navbar navbar-inverse">
+<nav class="navbar navbar-inverse rounded-0 mb-5">
     <div class="container">
         <div class="navbar-header">
             <!-- Collapsed Hamburger -->
