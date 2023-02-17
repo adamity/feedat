@@ -45,3 +45,8 @@
 .font-weight-bold {
     font-weight: 700 !important;
 }
+
+.img-logo {
+    width: 130px;
+    height: 130px;
+}
